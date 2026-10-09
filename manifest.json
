@@ -1,0 +1,15 @@
+{
+  "name": "Smart Calculator",
+  "short_name": "Calculator",
+  "start_url": "/My-Calculator/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e293b",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2344/2344132.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
