@@ -40,7 +40,6 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
-    /* Top Bar */
     .top-bar {
       display: flex;
       justify-content: space-between;
@@ -66,7 +65,6 @@
       cursor: pointer;
     }
 
-    /* Display Area */
     .display {
       text-align: right;
       padding: 10px 14px 20px;
@@ -91,7 +89,6 @@
       line-height: 1.1;
     }
 
-    /* Keypad Grid */
     .keypad {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -139,7 +136,6 @@
       font-size: 30px;
     }
 
-    /* History Overlay Modal */
     .history-panel {
       position: absolute;
       top: 0;
@@ -235,19 +231,16 @@
 <body>
 
   <div class="calculator">
-    <!-- Top Action Bar -->
     <div class="top-bar">
       <span class="app-title">Calculator</span>
       <button class="history-toggle-btn" onclick="toggleHistory(true)">🕒 History</button>
     </div>
 
-    <!-- Screen Displays -->
     <div class="display">
       <div class="sub-display" id="subDisplay"></div>
       <div class="main-display" id="mainDisplay">0</div>
     </div>
 
-    <!-- Calculator Buttons -->
     <div class="keypad">
       <button class="btn btn-action" onclick="allClear()">AC</button>
       <button class="btn btn-action" onclick="deleteLast()">⌫</button>
@@ -275,7 +268,6 @@
       <button class="btn btn-equal" onclick="calculate()">=</button>
     </div>
 
-    <!-- History Panel -->
     <div class="history-panel" id="historyPanel">
       <div class="history-header">
         <span class="history-title">History</span>
@@ -385,7 +377,6 @@
         let result = Function('"use strict";return (' + expression + ')')();
         result = Math.round(result * 100000000) / 100000000;
 
-        // Save to History
         saveHistory(currentInput, result);
 
         previousExpression = currentInput + ' =';
@@ -443,6 +434,13 @@
       history = [];
       localStorage.removeItem('calc_history');
       renderHistory();
+    }
+
+    /* PWA Service Worker Registration */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
     }
   </script>
 </body>
