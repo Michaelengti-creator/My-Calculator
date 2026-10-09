@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Smart Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    body {
+      background-color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #fff;
+    }
+    .calculator {
+      width: 100%;
+      max-width: 400px;
+      height: 100vh;
+      max-height: 820px;
+      background: #1e293b;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    @media (min-width: 420px) {
+      .calculator {
+        height: auto;
+        border-radius: 28px;
+      }
+    }
+    .display {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 20px 10px;
+      word-break: break-all;
+    }
+    .history {
+      color: #94a3b8;
+      font-size: 1.25rem;
+      min-height: 1.5rem;
+      margin-bottom: 6px;
+    }
+    .current {
+      color: #f8fafc;
+      font-size: 2.75rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding-top: 10px;
+    }
+    button {
+      border: none;
+      outline: none;
+      height: 68px;
+      border-radius: 20px;
+      font-size: 1.45rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: #334155;
+      color: #f1f5f9;
+      transition: transform 0.08s ease, background-color 0.15s ease;
+    }
+    button:active {
+      transform: scale(0.94);
+    }
+    button.op {
+      background: #3b82f6;
+      color: #ffffff;
+      font-weight: 600;
+    }
+    button.action {
+      background: #475569;
+      color: #f87171;
+    }
+    button.equals {
+      background: #10b981;
+      color: #ffffff;
+      font-size: 1.7rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display">
+      <div class="history" id="history"></div>
+      <div class="current" id="current">0</div>
+    </div>
+    <div class="keypad">
+      <button class="action" onclick="clearAll()">AC</button>
+      <button class="action" onclick="deleteChar()">⌫</button>
+      <button class="action" onclick="appendOp('%')">%</button>
+      <button class="op" onclick="appendOp('/')">÷</button>
+
+      <button onclick="appendNum('7')">7</button>
+      <button onclick="appendNum('8')">8</button>
+      <button onclick="appendNum('9')">9</button>
+      <button class="op" onclick="appendOp('*')">×</button>
+
+      <button onclick="appendNum('4')">4</button>
+      <button onclick="appendNum('5')">5</button>
+      <button onclick="appendNum('6')">6</button>
+      <button class="op" onclick="appendOp('-')">−</button>
+
+      <button onclick="appendNum('1')">1</button>
+      <button onclick="appendNum('2')">2</button>
+      <button onclick="appendNum('3')">3</button>
+      <button class="op" onclick="appendOp('+')">+</button>
+
+      <button onclick="toggleSign()">±</button>
+      <button onclick="appendNum('0')">0</button>
+      <button onclick="appendDot()">.</button>
+      <button class="equals" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script>
+    const currentEl = document.getElementById('current');
+    const historyEl = document.getElementById('history');
+    let expr = '';
+
+    function update() {
+      currentEl.textContent = expr || '0';
+    }
+
+    function appendNum(num) {
+      if (expr === '0') expr = '';
+      expr += num;
+      update();
+    }
+
+    function appendDot() {
+      const parts = expr.split(/[\+\-\*\/%]/);
+      const last = parts[parts.length - 1];
+      if (!last.includes('.')) {
+        expr += (last === '' ? '0.' : '.');
+        update();
+      }
+    }
+
+    function appendOp(op) {
+      if (!expr) {
+        if (op === '-') expr = '-';
+        update();
+        return;
+      }
+      if (/[\+\-\*\/%]$/.test(expr)) {
+        expr = expr.slice(0, -1) + op;
+      } else {
+        expr += op;
+      }
+      update();
+    }
+
+    function toggleSign() {
+      if (!expr) return;
+      try {
+        let val = eval(expr);
+        expr = (-val).toString();
+        update();
+      } catch (e) {}
+    }
+
+    function clearAll() {
+      expr = '';
+      historyEl.textContent = '';
+      update();
+    }
+
+    function deleteChar() {
+      expr = expr.slice(0, -1);
+      update();
+    }
+
+    function calculate() {
+      if (!expr) return;
+      try {
+        let sanitized = expr.replace(/÷/g, '/').replace(/×/g, '*');
+        let res = Function(`'use strict'; return (${sanitized})`)();
+        historyEl.textContent = expr + ' =';
+        expr = Number.isFinite(res) ? String(parseFloat(res.toFixed(8))) : 'Error';
+        update();
+      } catch (err) {
+        historyEl.textContent = '';
+        currentEl.textContent = 'Error';
+        expr = '';
+      }
+    }
+  </script>
+</body>
+  </html>
+  
