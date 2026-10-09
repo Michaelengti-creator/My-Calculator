@@ -1,6 +1,7 @@
 {
   "name": "Smart Calculator",
   "short_name": "Calculator",
+  "description": "Smart Calculator for simple and daily math calculations.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0f172a",
